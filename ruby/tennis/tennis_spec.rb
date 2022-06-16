@@ -84,26 +84,32 @@ describe Game do
     end
   end
 
-  it "recognises deuce at 3-3, 4-4 & 7-7" do
-    3.times { game.score_point("a") }
-    3.times { game.score_point("b") }
-    expect(game.is_deuce).to eq(true)
-    game.score_point("a")
-    game.score_point("b")
-    expect(game.is_deuce).to eq(true)
-    3.times { game.score_point("a") }
-    3.times { game.score_point("b") }
-    expect(game.is_deuce).to eq(true)
-  end
-
-  it "doesn't recognise deuce at 0-0, 1-1 or 2-2" do
-    expect(game.is_deuce).to eq(false)
-    game.score_point("a")
-    game.score_point("b")
-    expect(game.is_deuce).to eq(false)
-    game.score_point("a")
-    game.score_point("b")
-    expect(game.is_deuce).to eq(false)
+  describe ".is_deuce" do
+    context "given scores are equal" do
+      context "and each score >= 3" do
+        it "returns true" do
+          set_score(3,3)
+          expect(game.is_deuce).to eq(true)
+          set_score(4,4)
+          expect(game.is_deuce).to eq(true)
+          set_score(5,5)
+          expect(game.is_deuce).to eq(true)
+          set_score(6,6)
+          expect(game.is_deuce).to eq(true)
+          set_score(12,12)
+          expect(game.is_deuce).to eq(true)
+        end
+      end
+      context "and each score < 3" do
+        it "returns false" do
+          expect(game.is_deuce).to eq(false)
+          set_score(1,1)
+          expect(game.is_deuce).to eq(false)
+          set_score(2,2)
+          expect(game.is_deuce).to eq(false)
+        end
+      end
+    end
   end
 
   it "recognises 'all' at 1-1 & 2-2" do
