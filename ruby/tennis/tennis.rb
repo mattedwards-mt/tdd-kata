@@ -1,5 +1,5 @@
 class Game
-  attr_reader :score
+  attr_accessor :score
 
   def initialize()
     @score = {"a" => 0, "b" => 0}
