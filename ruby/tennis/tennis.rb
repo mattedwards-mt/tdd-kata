@@ -21,7 +21,7 @@ class Game
   end
 
   def is_all()
-    return true if @score["a"] == @score["b"] and (@score["a"] == 1 or @score["a"] == 2)
+    return true if @score["a"] == @score["b"] and @score["a"] < 3
     return false
   end
 

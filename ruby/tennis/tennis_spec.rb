@@ -112,14 +112,18 @@ describe Game do
     end
   end
 
-  it "recognises 'all' at 1-1 & 2-2" do
-    expect(game.is_all).to eq(false)
-    game.score_point("a")
-    game.score_point("b")
-    expect(game.is_all).to eq(true)
-    game.score_point("a")
-    game.score_point("b")
-    expect(game.is_all).to eq(true)
+  describe ".is_all" do
+    context "given scores are equal" do
+      context "and each score < 3" do
+        it "returns true" do
+          expect(game.is_all).to eq(true)
+          set_score(1,1)
+          expect(game.is_all).to eq(true)
+          set_score(2,2)
+          expect(game.is_all).to eq(true)
+        end
+      end
+    end
   end
 
   it "recognises advantage at 4-3, 7-8 & 13-12" do
