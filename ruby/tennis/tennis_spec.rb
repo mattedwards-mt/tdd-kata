@@ -233,7 +233,7 @@ describe Game do
         set_score(0,4)
         expect(game.get_score).to eq("PLAYER B WINS!")
       end
-      it "returns 'PLAYER B WINS! for 7-5" do
+      it "returns 'PLAYER A WINS! for 7-5" do
         set_score(7,5)
         expect(game.get_score).to eq("PLAYER A WINS!")
       end
