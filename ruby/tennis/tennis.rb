@@ -30,4 +30,20 @@ class Game
     return "b" if @score["b"] - @score["a"] == 1 and @score["b"] > 3
     return false
   end
+
+  def convert_score(num)
+    return "LOVE" if num == 0
+    return "FIFTEEN" if num == 1
+    return "THIRTY" if num == 2
+    return "FORTY" if num == 3
+  end
+
+  def get_score()
+    a, b = convert_score(@score["a"]), convert_score(@score["b"])
+    return "PLAYER #{is_winner.upcase} WINS!" if is_winner
+    return "DEUCE" if is_deuce
+    return "#{a} ALL" if is_all
+    return "ADVANTAGE #{is_advantage.upcase}" if is_advantage
+    return "#{a} : #{b}"
+  end
 end

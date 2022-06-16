@@ -126,26 +126,135 @@ describe Game do
     end
   end
 
-  it "recognises advantage at 4-3, 7-8 & 13-12" do
-    4.times { game.score_point("a") }
-    3.times { game.score_point("b") }
-    expect(game.is_advantage).to eq("a")
-    3.times { game.score_point("a") }
-    5.times { game.score_point("b") }
-    expect(game.is_advantage).to eq("b")
-    6.times { game.score_point("a") }
-    4.times { game.score_point("b") }
-    expect(game.is_advantage).to eq("a")
+  describe ".is_advantage" do
+    context "given scores differ by just 1 point" do
+      context "where lower score > 2" do
+        it "returns 'a' for scores of 4-3, 5-4, 6-5, 13-12" do
+          set_score(4,3)
+          expect(game.is_advantage).to eq("a")
+          set_score(5,4)
+          expect(game.is_advantage).to eq("a")
+          set_score(6,5)
+          expect(game.is_advantage).to eq("a")
+          set_score(13,12)
+          expect(game.is_advantage).to eq("a")
+        end
+        it "returns 'b' for scores of 3-4, 4-5, 5-6, 12-13" do
+          set_score(3,4)
+          expect(game.is_advantage).to eq("b")
+          set_score(4,5)
+          expect(game.is_advantage).to eq("b")
+          set_score(5,6)
+          expect(game.is_advantage).to eq("b")
+          set_score(12,13)
+          expect(game.is_advantage).to eq("b")
+        end
+      end
+      context "where lower score < 3" do
+        it "returns false" do
+          set_score(1,0)
+          expect(game.is_advantage).to eq(false)
+          set_score(2,1)
+          expect(game.is_advantage).to eq(false)
+          set_score(3,2)
+          expect(game.is_advantage).to eq(false)
+          set_score(0,1)
+          expect(game.is_advantage).to eq(false)
+          set_score(1,2)
+          expect(game.is_advantage).to eq(false)
+          set_score(2,3)
+          expect(game.is_advantage).to eq(false)
+        end
+      end
+    end
+    context "given scores don't differ by just 1 point" do
+      it "returns false" do
+        expect(game.is_advantage).to eq(false)
+        set_score(2,0)
+        expect(game.is_advantage).to eq(false)
+        set_score(5,7)
+        expect(game.is_advantage).to eq(false)
+        set_score(17,15)
+        expect(game.is_advantage).to eq(false)
+      end
+    end
   end
 
-  it "recognises no advantage at 1-2, 3-2 & 4-4" do
-    game.score_point("a")
-    2.times { game.score_point("b") }
-    expect(game.is_advantage).to eq(false)
-    2.times { game.score_point("a") }
-    expect(game.is_advantage).to eq(false)
-    game.score_point("a")
-    .times { game.score_point("b") }
-    expect(game.is_advantage).to eq(false)
+  describe ".covert_score" do
+    context "given score is less than 4" do
+      it "returns 'LOVE' for score of 0" do
+        expect(game.convert_score(0)).to eq("LOVE")
+      end
+      it "returns 'FIFTEEN' for score of 1" do
+        expect(game.convert_score(1)).to eq("FIFTEEN")
+      end
+      it "returns 'THIRTY' for score of 2" do
+        expect(game.convert_score(2)).to eq("THIRTY")
+      end
+      it "returns 'FORTY' for score of 3" do
+        expect(game.convert_score(3)).to eq("FORTY")
+      end
+    end
+    context "given score is greater than 3" do
+      it "returns 'nil'" do
+        expect(game.convert_score(4)).to be(nil)
+        expect(game.convert_score(5)).to be(nil)
+        expect(game.convert_score(6)).to be(nil)
+        expect(game.convert_score(20)).to be(nil)
+      end
+    end
+  end
+
+  describe ".get_score" do
+    context "given no winner or 'special' score format" do
+      it "returns 'FIFTEEN : LOVE' for 1-0" do
+        set_score(1,0)
+        expect(game.get_score).to eq("FIFTEEN : LOVE")
+      end
+      it "returns 'LOVE : FORTY' for 0-3" do
+        set_score(0,3)
+        expect(game.get_score).to eq("LOVE : FORTY")
+      end
+    end
+    context "given we have a winner" do
+      it "returns 'PLAYER A WINS! for 4-0" do
+        set_score(4,0)
+        expect(game.get_score).to eq("PLAYER A WINS!")
+      end
+      it "returns 'PLAYER B WINS! for 0-4" do
+        set_score(0,4)
+        expect(game.get_score).to eq("PLAYER B WINS!")
+      end
+      it "returns 'PLAYER B WINS! for 7-5" do
+        set_score(7,5)
+        expect(game.get_score).to eq("PLAYER A WINS!")
+      end
+    end
+    context "given it's an 'all' score" do
+      it "returns 'FIFTEEN ALL' for 1-1" do
+        set_score(1,1)
+        expect(game.get_score).to eq("FIFTEEN ALL")
+      end
+    end
+    context "given it's a 'deuce' score" do
+      it "returns 'DEUCE' for 3-3" do
+        set_score(3,3)
+        expect(game.get_score).to eq("DEUCE")
+      end
+      it "returns 'DEUCE' for 7-7" do
+        set_score(7,7)
+        expect(game.get_score).to eq("DEUCE")
+      end
+    end
+    context "given it's an 'advantage' score" do
+      it "returns 'ADVANTAGE A' for 4-3" do
+        set_score(4,3)
+        expect(game.get_score).to eq("ADVANTAGE A")
+      end
+      it "returns 'ADVANTAGE B' for 6-7" do
+        set_score(6,7)
+        expect(game.get_score).to eq("ADVANTAGE B")
+      end
+    end
   end
 end
