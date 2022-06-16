@@ -21,23 +21,32 @@ describe Game do
   end
 
   describe ".score_point" do
-    context "where A scores" do
-      it "increases A's score and not B's" do
-        game.score_point("a")
-        expect(game.score["a"]).to be(1)
-        game.score_point("a")
-        expect(game.score["a"]).to be(2)
-        expect(game.score["b"]).to be(0)
+    context "given there is no winner" do
+      context "where A scores" do
+        it "increases A's score and not B's" do
+          game.score_point("a")
+          expect(game.score["a"]).to be(1)
+          game.score_point("a")
+          expect(game.score["a"]).to be(2)
+          expect(game.score["b"]).to be(0)
+        end
+      end
+      context "where B scores" do
+        it "increases B's score and not A's" do
+          game.score_point("b")
+          expect(game.score["b"]).to be(1)
+          game.score_point("b")
+          expect(game.score["b"]).to be(2)
+          expect(game.score["a"]).to be(0)
+        end
       end
     end
-
-    context "where B scores" do
-      it "increases B's score and not A's" do
-        game.score_point("b")
-        expect(game.score["b"]).to be(1)
-        game.score_point("b")
-        expect(game.score["b"]).to be(2)
-        expect(game.score["a"]).to be(0)
+    context "given there is already a winner" do
+      it "leaves score untouched and returns message" do
+        set_score(5,3)
+        expect(game.score_point("a")).to eq("We already have a winner. Reset to play again.")
+        expect(game.score["b"]).to be(3)
+        expect(game.score["a"]).to be(5)
       end
     end
   end
@@ -69,7 +78,6 @@ describe Game do
         end
       end
     end
-    
     context "given there is no winner" do
       context "eg. where score is 0-3, 4-3 or 7-6" do
         it "returns false" do
@@ -180,7 +188,7 @@ describe Game do
     end
   end
 
-  describe ".covert_score" do
+  describe ".convert_score" do
     context "given score is less than 4" do
       it "returns 'LOVE' for score of 0" do
         expect(game.convert_score(0)).to eq("LOVE")
